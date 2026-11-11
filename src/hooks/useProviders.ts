@@ -1,51 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabaseClient";
+import { mockProviders } from "@/lib/mockProviders";
 import type { ProviderListItem } from "@/types/database";
 
-// Listado filtrado por especialidad (mapa de UX 2.3). Solo trae
-// prestadores que ya cumplen los tres estados de confianza: identidad
-// verificada + fiscal aprobado + modo prestador activo — el resto no debe
-// aparecer en búsquedas aunque tenga el perfil armado.
+// Listado filtrado por especialidad (mapa de UX 2.3). Usa datos de ejemplo
+// en vez de Supabase (pedido de Natalia — ver src/lib/mockProviders.ts).
 export function useProviders(specialty: string) {
   return useQuery({
     queryKey: ["providers", specialty],
     queryFn: async (): Promise<ProviderListItem[]> => {
-      const { data, error } = await supabase
-        .from("provider_details")
-        .select(
-          "*, profile:profiles!inner(id, full_name, avatar_url, identity_verified, fiscal_status, is_provider_active)"
-        )
-        .contains("specialties", [specialty])
-        .eq("profile.identity_verified", true)
-        .eq("profile.fiscal_status", "aprobado")
-        .eq("profile.is_provider_active", true);
-
-      if (error) throw error;
-      return (data ?? []) as unknown as ProviderListItem[];
+      return mockProviders.filter((p) => p.specialties.includes(specialty));
     }
   });
 }
 
 // "Cerca tuyo ahora" del home cliente (mapa de UX 2.1) — disponibles
-// primero, cualquier especialidad (no hay geolocalización del cliente en
-// este MVP, así que "cerca" queda como orden por disponibilidad).
+// primero, cualquier especialidad.
 export function useNearbyProviders(limit = 4) {
   return useQuery({
     queryKey: ["providers", "nearby", limit],
     queryFn: async (): Promise<ProviderListItem[]> => {
-      const { data, error } = await supabase
-        .from("provider_details")
-        .select(
-          "*, profile:profiles!inner(id, full_name, avatar_url, identity_verified, fiscal_status, is_provider_active)"
-        )
-        .eq("profile.identity_verified", true)
-        .eq("profile.fiscal_status", "aprobado")
-        .eq("profile.is_provider_active", true)
-        .order("available_now", { ascending: false })
-        .limit(limit);
-
-      if (error) throw error;
-      return (data ?? []) as unknown as ProviderListItem[];
+      return [...mockProviders]
+        .sort((a, b) => Number(b.available_now) - Number(a.available_now))
+        .slice(0, limit);
     }
   });
 }
@@ -57,7 +33,7 @@ export function useNearbyProviders(limit = 4) {
 function normalize(value: string) {
   return value
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
 }
 
@@ -68,19 +44,8 @@ export function useSearchProviders(query: string) {
     queryKey: ["providers", "search", query],
     enabled: query.trim().length > 1,
     queryFn: async (): Promise<ProviderListItem[]> => {
-      const { data, error } = await supabase
-        .from("provider_details")
-        .select(
-          "*, profile:profiles!inner(id, full_name, avatar_url, identity_verified, fiscal_status, is_provider_active)"
-        )
-        .eq("profile.identity_verified", true)
-        .eq("profile.fiscal_status", "aprobado")
-        .eq("profile.is_provider_active", true);
-
-      if (error) throw error;
-      const results = (data ?? []) as unknown as ProviderListItem[];
       const needle = normalize(query);
-      return results.filter((p) => normalize(p.profile.full_name).includes(needle));
+      return mockProviders.filter((p) => normalize(p.profile.full_name).includes(needle));
     }
   });
 }
@@ -90,14 +55,7 @@ export function useProvider(profileId: string | undefined) {
     queryKey: ["provider", profileId],
     enabled: !!profileId,
     queryFn: async (): Promise<ProviderListItem | null> => {
-      const { data, error } = await supabase
-        .from("provider_details")
-        .select("*, profile:profiles(id, full_name, avatar_url, identity_verified, fiscal_status, is_provider_active)")
-        .eq("profile_id", profileId)
-        .single();
-
-      if (error) throw error;
-      return data as unknown as ProviderListItem;
+      return mockProviders.find((p) => p.profile_id === profileId) ?? null;
     }
   });
 }

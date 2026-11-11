@@ -67,7 +67,9 @@ import {
   IconPalette,
   IconPaw,
   IconWalk,
-  IconArrowRight
+  IconArrowRight,
+  IconVacuumCleaner,
+  IconPool
 } from "@tabler/icons-react";
 
 // Tipado laxo a propósito: cada ícono de @tabler/icons-react trae su
@@ -150,7 +152,9 @@ const ICONS: Record<string, IconComponent> = {
   palette: IconPalette,
   paw: IconPaw,
   walk: IconWalk,
-  "arrow-right": IconArrowRight
+  "arrow-right": IconArrowRight,
+  "vacuum-cleaner": IconVacuumCleaner,
+  pool: IconPool
 };
 
 // Sigue el tamaño de fuente heredado (className="text-lg" etc. en todos

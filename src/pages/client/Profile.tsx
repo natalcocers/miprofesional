@@ -60,7 +60,7 @@ export default function ClientProfile() {
 
   return (
     <div className="min-h-screen bg-cream px-6 pb-24 pt-10 dark:bg-navy-dark">
-      <h1 className="mb-4 font-rounded text-lg font-bold text-navy dark:text-cream">Mi perfil</h1>
+      <h1 className="mb-4 font-logo text-3xl font-normal text-navy dark:text-cream">mi perfil</h1>
 
       <div className="flex items-center gap-3 rounded-2xl border-2 border-navy/15 bg-cream p-4 dark:border-cream/15 dark:bg-navy-dark">
         <Avatar name={profile?.full_name ?? ""} src={profile?.avatar_url} size="lg" />

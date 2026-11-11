@@ -44,7 +44,7 @@ export function TabBar({ mode }: { mode: "client" | "provider" }) {
               end
               aria-label={tab.label}
               className={({ isActive }) =>
-                clsx("flex items-center justify-center p-2 text-lg", isActive ? "text-cream" : "text-cream/30")
+                clsx("flex items-center justify-center p-2 text-xl", isActive ? "text-cream" : "text-cream/30")
               }
             >
               <Icon name={tab.icon} />

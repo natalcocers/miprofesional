@@ -1,24 +1,27 @@
 import { Link } from "react-router-dom";
 import { TabBar } from "@/components/layout/TabBar";
 import { Icon } from "@/components/ui/Icon";
-import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
+import { ProviderCard } from "@/components/ui/ProviderCard";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { RoleSwitch } from "@/components/ui/RoleSwitch";
 import { useAuth } from "@/context/AuthContext";
 import { useNearbyProviders } from "@/hooks/useProviders";
-import { categories, specialtyLabel } from "@/lib/catalog";
+import { categories } from "@/lib/catalog";
 
 export default function ClientHome() {
   const { profile } = useAuth();
   const { data: nearby, isLoading } = useNearbyProviders();
   const firstName = profile?.full_name?.split(" ")[0] ?? "";
+  // Única categoría (Hogar) — la tarjeta de categoría ya no tiene sentido
+  // acá, se muestran directo sus oficios (pedido de Natalia).
+  const [hogar] = categories;
+  const oficios = hogar?.specialties ?? [];
 
   return (
     <div className="min-h-screen bg-cream dark:bg-navy-dark pb-24">
       <header className="flex items-start justify-between px-6 pt-10">
         <div>
-          <p className="font-rounded text-base font-semibold text-navy dark:text-cream">Hola, {firstName}</p>
+          <p className="font-logo text-3xl font-normal text-navy dark:text-cream">hola, {firstName}</p>
           {profile?.location_label ? (
             <p className="mt-0.5 flex items-center gap-1 font-tech text-xs text-navy/50 dark:text-cream/50">
               <Icon name="map-pin" className="text-xs" />
@@ -50,12 +53,13 @@ export default function ClientHome() {
 
       <section className="px-6 pt-6">
         <p className="mb-2 font-rounded text-sm font-bold text-navy dark:text-cream">Categorías</p>
-        <div className="grid grid-cols-3 gap-2">
-          {categories.map((cat) => (
-            <Link key={cat.id} to={`/categoria/${cat.id}`}>
-              <div className="flex flex-col items-center gap-1.5 rounded-xl border-2 border-navy/15 dark:border-cream/15 bg-cream dark:bg-navy-dark py-3 text-center hover:border-accent">
-                <Icon name={cat.icon} className="text-lg text-navy dark:text-cream" />
-                <span className="font-caption text-[11px] font-bold text-navy dark:text-cream">{cat.label}</span>
+        <div className="grid grid-cols-2 gap-3">
+          {oficios.map((sp) => (
+            <Link key={sp.id} to={`/categoria/${hogar.id}/${sp.id}`}>
+              <div className="flex items-center gap-2 rounded-pill bg-accent px-4 py-3.5 hover:brightness-110">
+                <Icon name={sp.icon} className="text-xl text-cream" />
+                <span className="flex-1 text-center font-caption text-base font-bold text-cream">{sp.label}</span>
+                <span className="w-5 shrink-0" aria-hidden="true" />
               </div>
             </Link>
           ))}
@@ -63,31 +67,16 @@ export default function ClientHome() {
       </section>
 
       <section className="px-6 pt-6">
-        <p className="mb-2 font-rounded text-sm font-bold text-navy dark:text-cream">Cerca tuyo ahora</p>
+        <p className="mb-2 font-logo text-xl font-normal text-navy dark:text-cream">cerca tuyo ahora</p>
 
         {isLoading && <p className="font-tech text-sm text-navy/40 dark:text-cream/40">Buscando profesionales...</p>}
         {!isLoading && !nearby?.length && (
           <p className="font-tech text-sm text-navy/50 dark:text-cream/50">Todavía no hay profesionales aprobados.</p>
         )}
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-3">
           {nearby?.map((p) => (
-            <Link key={p.profile_id} to={`/profesional/${p.profile_id}`}>
-              <div className="flex items-center gap-2.5 rounded-xl border-2 border-navy/15 dark:border-cream/15 bg-cream dark:bg-navy-dark p-2.5">
-                <Avatar name={p.profile.full_name} src={p.profile.avatar_url} size="sm" />
-                <div className="flex-1">
-                  <p className="font-caption text-sm font-semibold text-navy dark:text-cream">{p.profile.full_name}</p>
-                  <p className="font-caption text-xs text-navy/50 dark:text-cream/50">{specialtyLabel(p.specialties[0])}</p>
-                </div>
-                {p.available_now ? (
-                  <Badge tone="available">Disponible</Badge>
-                ) : p.next_slot_label ? (
-                  <Badge tone="neutral">{p.next_slot_label}</Badge>
-                ) : (
-                  <Badge tone="neutral">No disponible</Badge>
-                )}
-              </div>
-            </Link>
+            <ProviderCard key={p.profile_id} provider={p} />
           ))}
         </div>
       </section>

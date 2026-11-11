@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { TabBar } from "@/components/layout/TabBar";
 import { BackHeader } from "@/components/layout/BackHeader";
-import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
+import { ProviderCard } from "@/components/ui/ProviderCard";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
 import { useProviders } from "@/hooks/useProviders";
@@ -109,33 +108,13 @@ export default function ClientListing() {
           </div>
         )}
 
-        {view === "lista" && visible.map((p) => (
-          <Link key={p.profile_id} to={`/profesional/${p.profile_id}`}>
-            <div className="flex items-center gap-2.5 rounded-xl border-2 border-navy/15 dark:border-cream/15 bg-cream dark:bg-navy-dark p-2.5">
-              <Avatar name={p.profile.full_name} src={p.profile.avatar_url} />
-              <div className="flex-1">
-                <div className="flex items-center gap-1">
-                  <span className="font-caption text-sm font-bold text-navy dark:text-cream">{p.profile.full_name}</span>
-                  {p.profile.identity_verified && (
-                    <Icon name="rosette-discount-check" className="text-xs text-green-functional" />
-                  )}
-                </div>
-                <p className="font-caption text-xs text-navy/50 dark:text-cream/50">{specialtyLabel(p.specialties[0])} · {p.work_zone}</p>
-                {(p.rating_avg ?? ratings?.[p.profile_id]?.avg) !== undefined && (
-                  <p className="font-tech text-xs text-amber-700">
-                    {(p.rating_avg ?? ratings?.[p.profile_id]?.avg ?? 0).toFixed(1)} <Icon name="star" /> (
-                    {p.rating_count ?? ratings?.[p.profile_id]?.count ?? 0})
-                  </p>
-                )}
-              </div>
-              {p.available_now ? (
-                <Badge tone="available">Disponible ahora</Badge>
-              ) : (
-                p.next_slot_label && <Badge tone="neutral">{p.next_slot_label}</Badge>
-              )}
-            </div>
-          </Link>
-        ))}
+        {view === "lista" && (
+          <div className="grid grid-cols-2 gap-3">
+            {visible.map((p) => (
+              <ProviderCard key={p.profile_id} provider={p} />
+            ))}
+          </div>
+        )}
       </section>
 
       <TabBar mode="client" />

@@ -60,10 +60,10 @@ export default function ProviderProfile() {
         <div className="flex items-center gap-3">
           <Avatar name={provider.profile.full_name} src={provider.profile.avatar_url} size="lg" />
           <div className="flex-1">
-            <p className="flex items-center gap-1 font-caption text-base font-semibold text-navy dark:text-cream">
+            <p className="flex items-center gap-1 font-caption text-xl font-bold text-navy dark:text-cream">
               {provider.profile.full_name}
               {provider.profile.identity_verified && (
-                <Icon name="rosette-discount-check" className="text-sm text-green-functional" />
+                <Icon name="rosette-discount-check" className="text-base text-green-functional" />
               )}
             </p>
             <p className="font-caption text-xs text-navy/50 dark:text-cream/50">
@@ -85,10 +85,10 @@ export default function ProviderProfile() {
           )
         )}
 
-        <p className="mb-1.5 mt-6 font-rounded text-sm font-bold text-navy dark:text-cream">Sobre mí</p>
+        <p className="mb-1.5 mt-6 font-rounded text-lg font-bold text-navy dark:text-cream">Sobre mí</p>
         <p className="font-caption text-sm leading-relaxed text-navy/70 dark:text-cream/70">{provider.bio || "Todavía no cargó su bio."}</p>
 
-        <p className="mb-2 mt-6 font-rounded text-sm font-bold text-navy dark:text-cream">Trabajos realizados</p>
+        <p className="mb-2 mt-6 font-rounded text-lg font-bold text-navy dark:text-cream">Trabajos realizados</p>
         <div className="flex gap-2">
           {(gallery?.length ? gallery : [null, null, null]).slice(0, 3).map((item, i) =>
             item ? (
@@ -99,7 +99,7 @@ export default function ProviderProfile() {
           )}
         </div>
 
-        <p className="mb-2 mt-6 font-rounded text-sm font-bold text-navy dark:text-cream">Reseñas</p>
+        <p className="mb-2 mt-6 font-rounded text-lg font-bold text-navy dark:text-cream">Reseñas</p>
         {!reviews?.length && <p className="font-tech text-sm text-navy/50 dark:text-cream/50">Todavía sin reseñas.</p>}
         {reviews?.slice(0, 2).map((r) => (
           <div key={r.id} className="mb-2 rounded-xl border-2 border-navy/15 dark:border-cream/15 bg-cream dark:bg-navy-dark p-2.5">

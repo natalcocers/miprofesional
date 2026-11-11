@@ -30,5 +30,15 @@ export default defineConfig({
     alias: {
       "@": "/src"
     }
+  },
+  server: {
+    watch: {
+      // imgs/ es la carpeta de trabajo de Natalia (ver .gitignore) donde
+      // deja fotos recién guardadas antes de copiarlas a public/ — un
+      // archivo ahí puede quedar momentáneamente bloqueado por el SO,
+      // y Vite tira EBUSY y se cae si intenta observarlo. No hace falta
+      // watch ahí: nada en esa carpeta se sirve ni se importa.
+      ignored: ["**/imgs/**"]
+    }
   }
 });

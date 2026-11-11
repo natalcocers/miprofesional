@@ -10,7 +10,7 @@ export default function Messages({ mode }: { mode: "client" | "provider" }) {
 
   return (
     <div className="min-h-screen bg-cream dark:bg-navy-dark px-6 pb-24 pt-10">
-      <h1 className="mb-4 font-rounded text-lg font-bold text-navy dark:text-cream">Mensajes</h1>
+      <h1 className="mb-4 font-logo text-3xl font-normal text-navy dark:text-cream">mensajes</h1>
 
       <section className="space-y-2">
         {isLoading && <p className="font-tech text-sm text-navy/50 dark:text-cream/50">Cargando conversaciones...</p>}

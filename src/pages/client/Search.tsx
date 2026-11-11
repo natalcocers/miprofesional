@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { TabBar } from "@/components/layout/TabBar";
-import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
+import { ProviderCard } from "@/components/ui/ProviderCard";
 import { Icon } from "@/components/ui/Icon";
 import { useSearchProviders } from "@/hooks/useProviders";
 
@@ -34,18 +32,13 @@ export default function Search() {
         {!isLoading && query.trim().length > 1 && !results?.length && (
           <p className="text-center font-tech text-sm text-navy/40 dark:text-cream/40">No encontramos profesionales con ese nombre.</p>
         )}
-        {results?.map((p) => (
-          <Link key={p.profile_id} to={`/profesional/${p.profile_id}`}>
-            <div className="flex items-center gap-2.5 rounded-xl border-2 border-navy/15 dark:border-cream/15 bg-cream dark:bg-navy-dark p-2.5">
-              <Avatar name={p.profile.full_name} src={p.profile.avatar_url} size="sm" />
-              <div className="flex-1">
-                <p className="font-caption text-sm font-semibold text-navy dark:text-cream">{p.profile.full_name}</p>
-                <p className="font-caption text-xs text-navy/50 dark:text-cream/50 capitalize">{p.specialties[0]}</p>
-              </div>
-              {p.available_now && <Badge tone="available">Disponible</Badge>}
-            </div>
-          </Link>
-        ))}
+        {!!results?.length && (
+          <div className="grid grid-cols-2 gap-3">
+            {results.map((p) => (
+              <ProviderCard key={p.profile_id} provider={p} />
+            ))}
+          </div>
+        )}
       </div>
 
       <TabBar mode="client" />

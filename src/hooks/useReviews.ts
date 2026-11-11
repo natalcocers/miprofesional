@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
+import { mockReviews } from "@/lib/mockReviews";
 import type { Review } from "@/types/database";
 
 export function useProviderReviews(providerId: string | undefined) {
@@ -7,13 +8,7 @@ export function useProviderReviews(providerId: string | undefined) {
     queryKey: ["reviews", providerId],
     enabled: !!providerId,
     queryFn: async (): Promise<Review[]> => {
-      const { data, error } = await supabase
-        .from("reviews")
-        .select("*")
-        .eq("provider_id", providerId)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as Review[];
+      return mockReviews.filter((r) => r.provider_id === providerId);
     }
   });
 }
@@ -30,11 +25,9 @@ export function useProviderRatings(providerIds: string[]) {
     queryKey: ["reviews", "ratings", providerIds],
     enabled: providerIds.length > 0,
     queryFn: async (): Promise<Record<string, RatingSummary>> => {
-      const { data, error } = await supabase.from("reviews").select("provider_id, rating").in("provider_id", providerIds);
-      if (error) throw error;
-
       const summary: Record<string, RatingSummary> = {};
-      for (const row of (data ?? []) as { provider_id: string; rating: number }[]) {
+      for (const row of mockReviews) {
+        if (!providerIds.includes(row.provider_id)) continue;
         const current = summary[row.provider_id] ?? { avg: 0, count: 0 };
         const total = current.avg * current.count + row.rating;
         current.count += 1;
