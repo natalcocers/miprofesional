@@ -2,7 +2,11 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
-export default defineConfig({
+// base "/miprofesional/" solo en build: así el deploy a GitHub Pages
+// (sirve en usuario.github.io/miprofesional/) encuentra los assets, pero
+// `npm run dev` sigue en la raíz como siempre.
+export default defineConfig(({ command }) => ({
+  base: command === "build" ? "/miprofesional/" : "/",
   plugins: [
     react(),
     VitePWA({
@@ -41,4 +45,4 @@ export default defineConfig({
       ignored: ["**/imgs/**"]
     }
   }
-});
+}));
