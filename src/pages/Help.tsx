@@ -32,8 +32,8 @@ export default function Help() {
 
       <p className="mt-8 font-caption text-sm text-navy/50 dark:text-cream/50">
         ¿No encontraste lo que buscabas? Escribinos a{" "}
-        <a href="mailto:soporte@promatch.app" className="text-accent underline">
-          soporte@promatch.app
+        <a href="mailto:soporte@miprofesional.com.ar" className="text-accent underline">
+          soporte@miprofesional.com.ar
         </a>
         .
       </p>
