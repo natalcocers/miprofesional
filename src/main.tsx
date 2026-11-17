@@ -10,12 +10,18 @@ import "@/index.css";
 
 const queryClient = new QueryClient();
 
+// import.meta.env.BASE_URL es el "base" de vite.config.ts ("/" en dev,
+// "/miprofesional/" en build) — sin pasarlo acá, el router ignora esa
+// base y arma las rutas desde la raíz del dominio (rompe en GitHub
+// Pages, que sirve en /miprofesional/). basename no lleva barra final.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={basename}>
             <CircleTransitionProvider>
               <App />
             </CircleTransitionProvider>
